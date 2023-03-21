@@ -181,18 +181,14 @@ export default class UserCrud extends Component {
                 <td>{ldap.base_dn}</td>
                 <td>{ldap.bind_dn}</td>
                 <td>
-                    <ul>
-                        <li>
-                            <a href="#" className="text-info" onClick={e => this.editLdap(e, ldap)}>
-                                <i className="fa fa-edit"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-danger" onClick={e => this.remove(e, ldap)}>
-                                <i className="fa fa-remove"></i>
-                            </a>
-                        </li>
-                    </ul>
+                    <div>
+                        <a href="#" className="text-info container" onClick={e => this.editLdap(e, ldap)}>
+                            <i className="fa fa-edit"></i>
+                        </a>
+                        <a href="#" className="text-danger container" onClick={e => this.remove(e, ldap)}>
+                            <i className="fa fa-remove"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
             ));

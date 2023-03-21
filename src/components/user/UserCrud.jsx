@@ -227,11 +227,11 @@ export default class UserCrud extends Component {
                 <td>
                     <ul>
                     {this.checkLdapStatus(person)}
-                        <li>
+                        <div>
                             <a href="#" onClick={e => this.editPerson(e, person)} className="text-info">
                                 Editar <i className="fa fa-edit"></i>
                             </a>
-                        </li>
+                        </div>
                         {/* <li>
                             <Link to="/" className="text-danger">
                                 <i className="fa fa-remove"></i>
@@ -303,10 +303,13 @@ export default class UserCrud extends Component {
                 
             case "sync":
                 return (
-                    <li className="text-success">
-                        Sinc <i className="fa fa-check-circle"></i>
-                    </li>
+                    <div className="text-success">
+                        Sync <i className="fa fa-check-circle"></i>
+                    </div>
                 );
+
+            default:
+                console.log("sync status unknown " + sync.status)
         }
 
     }

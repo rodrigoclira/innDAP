@@ -1,4 +1,4 @@
-import React, { Component, useRef } from 'react';
+import React, { Component } from 'react';
 import Main from '../templates/Main';
 import api from '../../services/Axios';
 import { Modal } from 'react-bootstrap';

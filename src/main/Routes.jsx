@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Redirect } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import Home from '../components/home/Home';
 import Success from '../components/success/Success';

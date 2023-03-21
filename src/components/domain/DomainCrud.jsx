@@ -139,26 +139,16 @@ export default class UserCrud extends Component {
                 <td>{domain.id}</td>
                 <td>{domain.name}</td>
                 <td>
-                    <ul>
-                        <li>
-                            <div>
-                                <a className="text-info pointer"
-                                    onClick={e => this.editDomain(e, domain)}
-                                >
-                                <i className="fa fa-edit"></i>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <a className="text-danger"
-                                    onClick={e => this.remove(e, domain)}
-                                >
-                                <i className="fa fa-remove"></i>
-                                </a>
-                            </div> 
-                        </li>
-                    </ul>
+                    <div>
+                        <a className="text-info pointer container"
+                            onClick={e => this.editDomain(e, domain)}>
+                        <i className="fa fa-edit"></i>
+                        </a>
+                        <a className="text-danger container"
+                            onClick={e => this.remove(e, domain)}>
+                        <i className="fa fa-remove"></i>
+                        </a>
+                    </div> 
                 </td>
             </tr>
             ));

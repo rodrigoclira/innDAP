@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Main from '../templates/Main';
 import api from '../../services/Axios';
 import Select from 'react-select';
-import Calendar from 'react-calendar';
 
 
 const headerProps = {
