@@ -3,6 +3,8 @@ import Main from '../templates/Main';
 import api from '../../services/Axios';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
 const headerProps = {
     icon: 'building',
@@ -116,13 +118,7 @@ export default class UserCrud extends Component {
                 <th></th>
                 <th>Domínio</th>
                 <th>Nome</th>
-                <th>
-                <Link to="#"
-                    onClick={e => this.toggle(e)}
-                >
-                    <i className="fa fa-plus text-success"></i>
-                </Link>
-                </th>
+                <th>Ações</th>
             </thead>
             <tbody>
                 {this.renderDomainRows()}
@@ -141,11 +137,11 @@ export default class UserCrud extends Component {
                 <td>
                     <div>
                         <a className="text-info pointer container"
-                            onClick={e => this.editDomain(e, domain)}>
+                            onClick={e => this.editDomain(e, domain)} title="Editar">
                         <i className="fa fa-edit"></i>
                         </a>
                         <a className="text-danger container"
-                            onClick={e => this.remove(e, domain)}>
+                            onClick={e => this.remove(e, domain)} title="Remover">
                         <i className="fa fa-remove"></i>
                         </a>
                     </div> 
@@ -239,8 +235,16 @@ export default class UserCrud extends Component {
     render() {
         return (
             <Main {...headerProps}>
-                 {this.render_modal_domain()}
-                {this.renderDomainTable()}
+                {this.render_modal_domain()}              
+                <Navbar bg="light" variant="light">
+                <div className="container">
+                    <Navbar.Brand href="#home"></Navbar.Brand>
+                    <Nav className="text-left">
+                        <input type="button" className="btn btn-info d-flex justify-content-end" id="add-domain" href="#" onClick={e => this.toggle(e)} value="Adicionar"></input>
+                    </Nav>
+                </div>
+                </Navbar>
+                    {this.renderDomainTable()}
             </Main>
         )
     }

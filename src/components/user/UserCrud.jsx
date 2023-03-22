@@ -255,49 +255,49 @@ export default class UserCrud extends Component {
             case "pending":
                 return (
                     <ul className="list-group">
-                        <li>
+                        <div>
                             <a href="#" className="text-success" onClick={e => {this.resolve(e, sync.id, "valid")}}>
                                     Aprovar <i className="fa fa-check-square-o"></i>
                             </a>
-                        </li>
-                        <li>
+                        </div>
+                        <div>
                             <a href="#" className="text-danger btn-toolbar" onClick={e => {this.resolve(e, sync.id, "rejected")}}>
                                     Rejeitar <i className="fa fa-remove"></i>
                             </a>
-                        </li>
+                        </div>
                     </ul>
                 );
             
             case "rejected":
                 return (
-                    <li>
+                    <div>
                         Rejeitado <i className="fa fa-ban text-danger"></i>
-                    </li>
+                    </div>
                 );
             
             case "failed":
                 return (
-                    <li className="text-danger">
+                    <div className="text-danger">
                         Falhou <i className="fa fa-exclamation-triangle"></i>
-                    </li>
+                    </div>
                 );
 
             case "update":
                 return (
-                    <li>
+                    <div>
                         <a href="#" className="text-primary" onClick={e => this.sync_entity(e, 1, person.uid)}>
                                 Sincronizar <i className="fa fa-refresh"></i>
                         </a>
-                    </li>
+                    </div>
                 );
 
             case "valid":
                     return (
-                        <li>
+                        <div>
                             <a href="#" className="text-primary" onClick={e => this.save_entity(e, 1, person.uid)}>
                                     Salvar LDAP <i className="fa fa-sitemap"></i>
                             </a>
-                        </li>
+                        </div>
                     );
     
                 
@@ -501,7 +501,7 @@ export default class UserCrud extends Component {
                     <input type="button" className="btn btn-info d-flex justify-content-end" id="sync" href="#" onClick={e => this.sync(e, 1)} value="Sincronizar"></input>
                 </Nav>
             </div>
-          </Navbar>
+            </Navbar>
                 {this.renderPersonTable()}
             </Main>
         )

@@ -3,6 +3,8 @@ import Main from '../templates/Main';
 import api from '../../services/Axios';
 import { Link } from 'react-router-dom'
 import { Modal } from 'react-bootstrap';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
 const headerProps = {
     icon: 'sitemap',
@@ -156,12 +158,7 @@ export default class UserCrud extends Component {
                     <th>Porta</th>
                     <th>BASE_DN</th>
                     <th>BIND_DN</th>
-                    <th>
-                        <Link to="#" 
-                            onClick={e => this.toggle(e)}>
-                            <i className="fa fa-plus text-success"></i>
-                        </Link>
-                    </th>
+                    <th>Ações</th>
                 </thead>
                 <tbody>
                     {this.renderLdapRows()}
@@ -182,10 +179,10 @@ export default class UserCrud extends Component {
                 <td>{ldap.bind_dn}</td>
                 <td>
                     <div>
-                        <a href="#" className="text-info container" onClick={e => this.editLdap(e, ldap)}>
+                        <a href="#" className="text-info container" onClick={e => this.editLdap(e, ldap)} title="Editar">
                             <i className="fa fa-edit"></i>
                         </a>
-                        <a href="#" className="text-danger container" onClick={e => this.remove(e, ldap)}>
+                        <a href="#" className="text-danger container" onClick={e => this.remove(e, ldap)} title="Remover">
                             <i className="fa fa-remove"></i>
                         </a>
                     </div>
@@ -304,9 +301,22 @@ export default class UserCrud extends Component {
     render() {
         return (
             <Main {...headerProps}>
-                {this.renderModalLdap()}
-                {this.renderLdapTable()}
+                {this.renderModalLdap()}               
+                <Navbar bg="light" variant="light">
+                <div className="container">
+                    <Navbar.Brand href="#home"></Navbar.Brand>
+                    <Nav className="text-left">
+                        <input type="button" className="btn btn-info d-flex justify-content-end" id="add-domain" href="#" onClick={e => this.toggle(e)} value="Adicionar"></input>
+                    </Nav>
+                </div>
+                </Navbar>
+                     {this.renderLdapTable()}
             </Main>
         )
     }
 }
+
+<Link to="#" 
+onClick={e => this.toggle(e)}>
+<i className="fa fa-plus text-success"></i>
+</Link>
