@@ -67,11 +67,12 @@ export default class UserCrud extends Component {
         api.get('/person')
             .then( resp => {
                 const personList = resp.data;
-                const sorted = personList.sort((a, b) => {
+                
+                /*const sorted = personList.sort((a, b) => {
                     return a.uid < b.uid ? -1 : a.uid > b.uid ? 1 : 0;
-                })
+                })*/
     
-                this.setState({ list: sorted });
+                this.setState({ list: personList });
             })
     }
 
@@ -190,8 +191,8 @@ export default class UserCrud extends Component {
         return (
             <table className="table mt-4 table-striped table-responsive">
                 <thead>
-                    <th>Usuário</th>
                     <th>Nome</th>
+                    <th>Usuário</th>
                     <th>E-mail</th>
                     <th>CPF</th>
                     <th>Passaporte</th>
@@ -213,8 +214,8 @@ export default class UserCrud extends Component {
         return this.state.list.map(person => (
             
             <tr key={String(person.uid)} >       
-                <td>{person.uid}</td>
                 <td>{person.name} {person.give_name} {person.surname}</td>
+                <td>{person.uid}</td>
                 <td>{person.email}</td>
                 <td>{person.cpf}</td>
                 <td>{person.passport}</td>
@@ -229,7 +230,7 @@ export default class UserCrud extends Component {
                     {this.checkLdapStatus(person)}
                         <div>
                             <a href="#" onClick={e => this.editPerson(e, person)} className="text-info">
-                                Editar <i className="fa fa-edit"></i>
+                                <i className="fa fa-edit"/> Editar 
                             </a>
                         </div>
                         {/* <li>
@@ -271,30 +272,30 @@ export default class UserCrud extends Component {
             case "rejected":
                 return (
                     <div>
-                        Rejeitado <i className="fa fa-ban text-danger"></i>
+                        <i className="fa fa-ban text-danger"/> Rejeitado 
                     </div>
                 );
             
             case "failed":
                 return (
                     <div className="text-danger">
-                        Falhou <i className="fa fa-exclamation-triangle"></i>
+                        <i className="fa fa-exclamation-triangle"></i> Falha
                     </div>
                 );
 
-            case "update":
+            case "update"://TODO Por que 1 ?
                 return (
                     <div>
-                        <a href="#" className="text-primary" onClick={e => this.sync_entity(e, 1, person.uid)}>
+                        <a href="#" className="text-primary" onClick={e => this.sync_entity(e, 1, person.uid)}> 
                                 Sincronizar <i className="fa fa-refresh"></i>
                         </a>
                     </div>
                 );
 
-            case "valid":
+            case "valid"://TODO Por que 1 ?
                     return (
                         <div>
-                            <a href="#" className="text-primary" onClick={e => this.save_entity(e, 1, person.uid)}>
+                            <a href="#" className="text-primary" onClick={e => this.save_entity(e, 1, person.uid)}> 
                                     Salvar LDAP <i className="fa fa-sitemap"></i>
                             </a>
                         </div>
@@ -304,7 +305,7 @@ export default class UserCrud extends Component {
             case "sync":
                 return (
                     <div className="text-success">
-                        Sync <i className="fa fa-check-circle"></i>
+                        <i className="fa fa-check-circle"/> Synced 
                     </div>
                 );
 
