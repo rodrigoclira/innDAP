@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import Main from '../templates/Main';
 import api from '../../services/Axios';
 import { Modal } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import { toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { defaultValidation } from '../util';
 
 let props = {
     selectedValue: null
@@ -74,8 +79,20 @@ export default class MailCrud extends Component {
         this.setState({ showModal: false });
     }
 
+    isValid(mail){
+        const isValid = defaultValidation(mail, ['id']);   
+        return isValid;
+    }
+
     save() {
         const mail = this.state.mail;
+        
+        if (!this.isValid(mail)){
+            toast.warning("Todas os campos são obrigatórios", {
+                position: toast.POSITION.TOP_RIGHT});
+            return ;
+        }
+
         this.toggle();
         let method = 'post';
         let to_uri = uri;
@@ -87,7 +104,19 @@ export default class MailCrud extends Component {
             .then(resp => {
                 const list = this.getUpdatedList(resp.data);
                 this.setState({ mail: mail, list: list })
-            })
+            }).catch((error) =>{
+
+                if (error.response.data.message.includes("pymysql.err.IntegrityError")){
+                    toast.error("Erro de adição do e-mail", {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                }else{
+                    toast.error("Erro inesperado", {
+                        position: toast.POSITION.TOP_RIGHT
+                    });   
+                }
+                console.log("error:" + error.response.data.message)        
+            });
     }
 
     getUpdatedList(mail) {
@@ -131,13 +160,7 @@ export default class MailCrud extends Component {
                     <th>Servidor</th>
                     <th>Porta</th>
                     <th>Protocolo</th>
-                    <th>
-                    <Link to="#"
-                        onClick={e => this.toggle(e)}
-                    >
-                        <i className="fa fa-plus text-success"></i>
-                    </Link>
-                    </th>
+                    <th>Ações</th>
                 </thead>
                 <tbody>
                     {this.renderMailRows()}
@@ -157,26 +180,19 @@ export default class MailCrud extends Component {
                 <td>{mail.port}</td>
                 <td>{mail.protocol}</td>
                 <td>
-                    <ul>
-                        <li>
-                            <div>
-                                <a className="text-info"
-                                    onClick={e => this.editMail(e, mail)}
-                                >
-                                <i className="fa fa-edit"></i>
-                                </a>
-                            </div>  
-                        </li>
-                        <li>
-                            <div>
-                                <a className="text-danger"
-                                    onClick={e => this.remove(e, mail)}
-                                >
-                                <i className="fa fa-remove"></i>
-                                </a>
-                            </div>                            
-                        </li>
-                    </ul>
+                    <div>
+                        <a className="text-info container"
+                            onClick={e => this.editMail(e, mail)}
+                            title="Editar">
+                        <i className="fa fa-edit"></i>
+                        </a>
+                        
+                        <a className="text-danger container"
+                            onClick={e => this.confirmRemove(e, mail)}
+                            title="Remover">
+                        <i className="fa fa-remove"></i>
+                        </a>
+                    </div>                            
                 </td>
             </tr>
             ));
@@ -220,7 +236,7 @@ export default class MailCrud extends Component {
                     <div className="col-12 col-md-6">
                         <div className="form-group">
                             <label>Porta</label>
-                            <input type="text" className="form-control"
+                            <input type="number" className="form-control"
                                 name="port"
                                 value={this.state.mail.port}
                                 onChange={e => this.updateField(e)}
@@ -334,6 +350,23 @@ export default class MailCrud extends Component {
         this.setState({ mail: mail });
     }
 
+    confirmRemove = (e, mail) => {
+        confirmAlert({
+          title: 'Confirmação',
+          message: `Você tem certeza que quer remover ${mail.address}?`,
+          buttons: [
+            {
+              label: 'Sim',
+              onClick: () => this.remove(e, mail)
+            },
+            {
+              label: 'Cancelar',
+              onClick: () => console.log(`Remoção de ${mail.address} cancelada`)
+            }
+          ]
+        });
+      };
+
     remove(event, mail) {
         api.delete(`${uri}/${mail.id}`)
             .then(resp => {
@@ -365,7 +398,15 @@ export default class MailCrud extends Component {
         return (
             <Main {...headerProps}>
                 {this.render_modal_mail()}
-                {this.renderMailTable()}
+                <Navbar bg="light" variant="light">
+                <div className="container">
+                    <Navbar.Brand href="#home"></Navbar.Brand>
+                    <Nav className="text-left">
+                        <input type="button" className="btn btn-info d-flex justify-content-end" id="add-domain" href="#" onClick={e => this.toggle(e)} value="Adicionar"></input>
+                    </Nav>
+                </div>
+                </Navbar>
+                    {this.renderMailTable()}
             </Main>
         )
     }

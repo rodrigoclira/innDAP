@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Main from '../templates/Main';
 import api from '../../services/Axios';
+import { toast } from 'react-toastify';
 
 
 const headerProps = {
@@ -68,7 +69,11 @@ export default class UserCrud extends Component {
             .then(resp => {
                 const list = this.getUpdatedList(resp.data);
                 this.clear();
-            });              
+            }).catch((error) =>{        
+                toast.error("Erro inesperado", {
+                        position: toast.POSITION.TOP_RIGHT})
+                console.log("error:" + error.response.data.message)        
+            });             
     }
 
     getUpdatedList(mail) {

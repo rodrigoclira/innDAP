@@ -5,6 +5,10 @@ import { Link } from 'react-router-dom'
 import { Modal } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import { toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { defaultValidation } from '../util';
 
 const headerProps = {
     icon: 'sitemap',
@@ -64,8 +68,20 @@ export default class UserCrud extends Component {
         this.setState({ showModal: false });
     }
 
+    isValid(ldap){
+        const isValid = defaultValidation(ldap);   
+        return isValid;
+    }
+
     save() {
         const ldap = this.state.ldap;
+
+        if (!this.isValid(ldap)){
+            toast.warning("Todas os campos são obrigatórios", {
+                position: toast.POSITION.TOP_RIGHT});
+            return ;
+        }
+
         this.toggle();
         let method = 'post';
         let to_uri = uri;
@@ -80,6 +96,24 @@ export default class UserCrud extends Component {
                 this.setState({ ldap: ldap, list: list })
             })
     }
+
+    confirmRemove = (e, ldap) => {
+        confirmAlert({
+          title: 'Confirmação',
+          message: `Você tem certeza que quer remover ${ldap.ip}:${ldap.port}?`,
+          buttons: [
+            {
+              label: 'Sim',
+              onClick: () => this.remove(e, ldap)
+            },
+            {
+              label: 'Cancelar',
+              onClick: () => console.log(`Remoção de ${ldap.id}:${ldap.port} cancelada`)
+            }
+          ]
+        });
+      };
+
 
     remove(event, ldap) {
         api.delete(`${uri}/${ldap.id}`)
@@ -182,7 +216,7 @@ export default class UserCrud extends Component {
                         <a href="#" className="text-info container" onClick={e => this.editLdap(e, ldap)} title="Editar">
                             <i className="fa fa-edit"></i>
                         </a>
-                        <a href="#" className="text-danger container" onClick={e => this.remove(e, ldap)} title="Remover">
+                        <a href="#" className="text-danger container" onClick={e => this.confirmRemove(e, ldap)} title="Remover">
                             <i className="fa fa-remove"></i>
                         </a>
                     </div>
@@ -251,14 +285,14 @@ export default class UserCrud extends Component {
                 </div>
                 <div className="col-12 col-md-4">
                     <div className="form-group">
-                        <label>Senha</label>
+                        <label for="input_password">Senha</label>
                         <input type="password" className="form-control"
                             id="input_password"
                             name="bind_credential"
                             value={this.state.ldap.bind_credential}
                             onChange={e => this.updateField(e)}
                             placeholder="Senha"
-                        />
+                        />                        
                     </div>
                 </div>
             </div>
@@ -315,8 +349,3 @@ export default class UserCrud extends Component {
         )
     }
 }
-
-<Link to="#" 
-onClick={e => this.toggle(e)}>
-<i className="fa fa-plus text-success"></i>
-</Link>

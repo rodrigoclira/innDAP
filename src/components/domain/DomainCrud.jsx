@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import Main from '../templates/Main';
 import api from '../../services/Axios';
-import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import { toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { defaultValidation } from '../util';
 
 const headerProps = {
     icon: 'building',
@@ -49,8 +52,20 @@ export default class UserCrud extends Component {
         this.setState({ showModal: false });
     }
 
+    isValid(domain){
+        const isValid = defaultValidation(domain, ['ldap_servers']);
+        return isValid;
+    }
+
     save(update) {
         const domain = this.state.domain;
+        
+        if (!this.isValid(domain)){
+            toast.warning("Todas os campos são obrigatórios", {
+                position: toast.POSITION.TOP_RIGHT});
+            return ;
+        }
+
         this.toggle();
         let method = 'post';
         let to_uri = uri;
@@ -63,7 +78,19 @@ export default class UserCrud extends Component {
             .then(resp => {
                 const list = this.getUpdatedList(resp.data);
                 this.setState( { domain: {id: null, name: null, ldap_servers: []}, list: list} )
-            })
+            }).catch((error) =>{
+
+                if (error.response.data.message.includes("pymysql.err.IntegrityError")){
+                    toast.error("Erro de adição de domínio", {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                }else{
+                    toast.error("Erro inesperado", {
+                        position: toast.POSITION.TOP_RIGHT
+                    });   
+                }
+                console.log("error:" + error.response.data.message)        
+            });
     }
 
     getUpdatedList(domain) {
@@ -96,6 +123,23 @@ export default class UserCrud extends Component {
         });
         
     }
+
+    confirmRemove = (e, domain) => {
+        confirmAlert({
+          title: 'Confirmação',
+          message: `Você tem certeza que quer remover ${domain.id}?`,
+          buttons: [
+            {
+              label: 'Sim',
+              onClick: () => this.remove(e, domain)
+            },
+            {
+              label: 'Cancelar',
+              onClick: () => console.log(`Remoção de ${domain.id} cancelada`)
+            }
+          ]
+        });
+      };
 
     remove(event, domain) {
         api.delete(`${uri}/${domain.id}`)
@@ -141,7 +185,7 @@ export default class UserCrud extends Component {
                         <i className="fa fa-edit"></i>
                         </a>
                         <a className="text-danger container"
-                            onClick={e => this.remove(e, domain)} title="Remover">
+                            onClick={e => this.confirmRemove(e, domain)} title="Remover">
                         <i className="fa fa-remove"></i>
                         </a>
                     </div> 
@@ -178,6 +222,7 @@ export default class UserCrud extends Component {
                         value={this.state.domain.id}
                         onChange={e => this.updateDomainField(e)}
                         placeholder="FQDN"
+                        required
                     />
                 </div>
             </div>
@@ -189,6 +234,7 @@ export default class UserCrud extends Component {
                         value={this.state.domain.name}
                         onChange={e => this.updateDomainField(e)}
                         placeholder="Nome"
+                        required
                     />
                 </div>
             </div>

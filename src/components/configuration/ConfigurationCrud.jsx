@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Main from '../templates/Main';
 import api from '../../services/Axios';
 import {Collapse} from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 
 const headerProps = {
@@ -32,7 +33,11 @@ export default class ConfigurationCrud extends Component {
             .then( resp => {
                 const list = resp.data;
                 this.setState({ list: list });
-            })
+            }).catch((error) =>{        
+                toast.error("Erro inesperado", {
+                        position: toast.POSITION.TOP_RIGHT})
+                console.log("error:" + error.response.data.message)        
+            });  
     }
 
     handleOpenModal () {
